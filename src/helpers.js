@@ -11,3 +11,67 @@ export const generateColoursArray = () => {
 	return colours
 }
 
+export const drawPalette = (colours, context, colourSize, drawWidth) => {
+  let xpos = 0
+  let ypos = 0
+  let count = 0
+  colours.forEach((colour) => {
+    const [r, g, b] = colour
+    const rect = {
+      x: xpos,
+      y: ypos,
+      width: colourSize,
+      height: colourSize
+    }
+    context.fillStyle = `RGB(${r}, ${g}, ${b})` 
+    context.fillRect(rect.x, rect.y, rect.width, rect.height)
+    count += 1
+    xpos = xpos + colourSize
+    if (xpos >= drawWidth) {
+      ypos += colourSize
+      xpos = 0
+    }
+  })
+  console.log(count)
+}
+
+// https://stackoverflow.com/questions/11923659/javascript-sort-rgb-values
+export function rgbToHsl(c) {
+	var r = c[0]/255, g = c[1]/255, b = c[2]/255
+	var max = Math.max(r, g, b), min = Math.min(r, g, b)
+	var h, s, l = (max + min) / 2
+
+	if(max == min) {
+		h = s = 0 // achromatic
+	} else {
+		var d = max - min
+		s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
+		switch(max){
+		case r: h = (g - b) / d + (g < b ? 6 : 0); break
+		case g: h = (b - r) / d + 2; break
+		case b: h = (r - g) / d + 4; break
+		}
+		h /= 6
+	}
+	return new Array(h * 360, s * 100, l * 100)
+}
+
+export const hslSort = (colours, sort) => {
+  if (sort === -1) {
+      return colours // no sort
+    } else {
+    return colours.map(function(c, i) {
+      // Convert to HSL and keep track of original indices
+      return {color: rgbToHsl(c), index: i}
+    }).sort(function(c1, c2) {
+      // Sort by hue
+      return c1.color[sort] - c2.color[sort]
+    }).map(function(data) {
+      // Retrieve original RGB color
+      return colours[data.index]
+    })
+  }
+} 
+
+
+  
