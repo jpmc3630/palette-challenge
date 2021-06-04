@@ -1,112 +1,204 @@
 /* eslint-disable indent */
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './App.css'
 import { Palette } from './components/Palette'
 import { generateColoursArray } from './helpers'
 
 function App() {
 
-	const [colourSize, setColourSize] = useState(4)
+	const [segmentSize, setSegmentSize] = useState(4)
 	const [sort, setSort] = useState(-1)
 	const [drawWidth, setDrawWidth] = useState(1024)
+  const [drawHeight, setDrawHeight] = useState(512)
+  const [border, setBorder] = useState(true)
 	const colours = generateColoursArray()
+  const [totalColours, setTotalColours] = useState('')
 
   const handleSlider = (event) => {
-    if (event.target.name === 'colourSize') {
-      setColourSize(parseInt(event.target.value))
+    if (event.target.name === 'segmentSize') {
+      setSegmentSize(parseInt(event.target.value))
     } else if (event.target.name === 'drawWidth') {
       setDrawWidth(parseInt(event.target.value))
     }
   }
 
   const handleSort = (event) => {
-    if (event.target.name === 'sortNone') {
-      setSort(-1)
-    } else if (event.target.name === 'sortHue') {
-      setSort(0)
-    } else if (event.target.name === 'sortSaturation') {
-      setSort(1)
-    } else if (event.target.name === 'sortLuminosity') {
-      setSort(2)
-    } 
+    setSort(parseInt(event.target.dataset.sort))
   }
+  const toggleBorder = (event) => {
+    setBorder(event.target.checked)
+  }
+  
+  useEffect(() => {
+    let calculatedHeight = Math.floor((32768 / Math.floor(drawWidth / segmentSize)) * segmentSize)
+    if (calculatedHeight > 20000) calculatedHeight = 20000 // set a max size to prevent killing browser
+    setDrawHeight(calculatedHeight)
+  }, [drawWidth, segmentSize])
 
 	return (
 		<div className="App">
-			<p>
-        Palette Challenge
-			</p>
-
       <div
-        className="controls"
+        className="header"
       >
-        <input
-          type="range"
-          name="colourSize"
-          onChange={handleSlider}
-          defaultValue="1"
-          min="1"
-          max="50"
-          style={{width: 400}}
-        />
-        Size of colour segment:
-        {colourSize} in px²
+        <h4>
+          Palette Challenge
+        </h4>
+        <div
+          className="controls-status-wrapper"
+        >
+          <div
+            className="controls"
+          >
+            <label
+              htmlFor="segmentSize"
+              className="sliderLabel"
+            >
+              Size of Colour Segments
+            </label>
+            <input
+              type="range"
+              name="segmentSize"
+              id="segmentSize"
+              onChange={handleSlider}
+              value={segmentSize}
+              min="1"
+              max="50"
+              style={{width: 400}}
+            />
+            <label 
+              htmlFor="segmentSize"
+              className="sliderValueLabel"
+            >
+              {segmentSize} px²
+            </label>
+            
+            <br />
 
-        <br />
+            <label 
+              htmlFor="drawWidth"
+              className="sliderLabel"
+            >
+              Canvas Width Limits
+            </label>
+            <input
+              type="range"
+              name="drawWidth"
+              id="drawWidth"
+              onChange={handleSlider}
+              value={drawWidth}
+              min="0"
+              max="2048"
+              style={{width: 400}}
+              />
+            <label 
+              htmlFor="drawWidth"
+              className="sliderValueLabel"
+            >
+              {drawWidth} px
+            </label>
+            <br />
 
-        <input
-          type="range"
-          name="drawWidth"
-          onChange={handleSlider}
-          defaultValue="1024"
-          min="0"
-          max="2048"
-          style={{width: 400}}
-        />
-        Width Limit:
-        {drawWidth} in px
+            <label
+              className="optionsLabel"
+            >
+              Sorting 
+            </label>
+            <input
+              type="radio"
+              name="sortNone"
+              id="sortNone"
+              onChange={handleSort}
+              checked={sort === -1 }
+              data-sort={-1}
+            />
+            <label htmlFor="sortNone">
+              None
+            </label>
+            
+            <input
+              type="radio"
+              name="sortHue"
+              id="sortHue"
+              onChange={handleSort}
+              checked={sort === 0 }
+              data-sort={0}
+            />
+            <label htmlFor="sortHue">
+              Hue
+            </label>
+            
+            <input
+              type="radio"
+              name="sortSaturation"
+              id="sortSaturation"
+              onChange={handleSort}
+              checked={sort === 1 }
+              data-sort={1}
+            />
+            <label htmlFor="sortSaturation">
+              Saturation
+            </label>
+            
+            <input
+              type="radio"
+              name="sortLuminosity"
+              id="sortLuminosity"
+              onChange={handleSort}
+              checked={sort === 2 }
+              data-sort={2}
+            />
+            <label htmlFor="sortLuminosity">
+              Luminosity
+            </label>
 
-        <br />
+            <div
+              className="borderDiv"
+            >
+              <label
+                htmlFor="border"
+                className="optionsLabel"
+              >
+                Border
+              </label>
+              <input
+                type="checkbox"
+                name="border"
+                id="border"
+                onChange={toggleBorder}
+                checked={border}
+              />
+              <label
+                htmlFor="border"
+              >
+                On
+              </label>
+            </div>
 
-        None
-        <input
-          type="radio"
-          name="sortNone"
-          onChange={handleSort}
-          checked={sort === -1 }
-        />
-        Hue
-        <input
-          type="radio"
-          name="sortHue"
-          onChange={handleSort}
-          checked={sort === 0 }
-        />
-        Saturation
-        <input
-          type="radio"
-          name="sortSaturation"
-          onChange={handleSort}
-          checked={sort === 1 }
-        />
-        Luminosity
-        <input
-          type="radio"
-          name="sortLuminosity"
-          onChange={handleSort}
-          checked={sort === 2 }
-        />
 
+          </div>
+
+          <div
+            className="status"
+          >
+            {drawWidth} wide x {drawHeight} high
+            <br />
+            {totalColours} colours<br />
+            { drawHeight === 20000 ? 'Max height reached!' : ''}
+          </div>
+        </div>
       </div>
 
-			<Palette
-        key={colourSize + drawWidth + sort}
+      <Palette
         colours={colours}
-        colourSize={colourSize}
+        segmentSize={segmentSize}
         drawWidth={drawWidth}
+        drawHeight={drawHeight}
         sort={sort}
+        border={border}
+        responseData={setTotalColours}
       />
 
+      { drawHeight === 20000 ? 'Sorry, we have to draw the line somewhere!' : ''}
 		</div>
 	)
 }
