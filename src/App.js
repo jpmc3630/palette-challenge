@@ -4,14 +4,13 @@ import { Palette } from './components/Palette'
 import { generateColoursArray } from './helpers'
 
 function App() {
-
+  const [colours, setColours] = useState([0,0,0])
 	const [segmentSize, setSegmentSize] = useState(4)
 	const [sort, setSort] = useState(-1)
 	const [drawWidth, setDrawWidth] = useState(1024)
   const [drawHeight, setDrawHeight] = useState(512)
   const [border, setBorder] = useState(true)
-	const colours = generateColoursArray()
-  const [totalColours, setTotalColours] = useState('')
+  const [totalColours, setTotalColours] = useState(0)
 
   const handleSlider = (event) => {
     if (event.target.name === 'segmentSize') {
@@ -26,6 +25,10 @@ function App() {
   const toggleBorder = (event) => {
     setBorder(event.target.checked)
   }
+
+  useEffect(()=>{
+    setColours(generateColoursArray())
+  },[])
   
   useEffect(() => {
     let calculatedHeight = Math.floor((32768 / Math.floor(drawWidth / segmentSize)) * segmentSize)
@@ -177,6 +180,7 @@ function App() {
         </div>
       </div>
       <Palette
+        key={segmentSize + drawWidth}
         colours={colours}
         segmentSize={segmentSize}
         drawWidth={drawWidth}
