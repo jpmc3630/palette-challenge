@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react'
+import React, { useEffect, useState, useRef, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { drawPalette, hslSort } from '../helpers'
 
@@ -12,8 +12,8 @@ export const Palette = ({
   responseData
 }) => {
 
-	const canvasRef = React.useRef()
-	const [context, setContext] = React.useState()
+	const canvasRef = useRef()
+	const [context, setContext] = useState()
   const responder = useCallback((data) => {
     responseData(data)
   }, [responseData])

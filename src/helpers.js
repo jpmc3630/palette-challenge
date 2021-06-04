@@ -1,9 +1,9 @@
 
 export const generateColoursArray = () => {
 	let colours = []
-	for (let r = 0; r <= 255; r+=8) {
-		for (let g = 0; g <= 255; g+=8) {
-			for (let b = 0; b <= 255; b+=8) {
+	for (let r = 8; r <= 256; r+=8) {
+		for (let g = 8; g <= 256; g+=8) {
+			for (let b = 8; b <= 256; b+=8) {
 				colours.push([r, g, b])
 			}
 		}
