@@ -1,4 +1,3 @@
-/* eslint-disable indent */
 import React, { useState, useEffect } from 'react'
 import './App.css'
 import { Palette } from './components/Palette'
@@ -21,7 +20,6 @@ function App() {
       setDrawWidth(parseInt(event.target.value))
     }
   }
-
   const handleSort = (event) => {
     setSort(parseInt(event.target.dataset.sort))
   }
@@ -71,9 +69,7 @@ function App() {
             >
               {segmentSize} px²
             </label>
-            
             <br />
-
             <label 
               htmlFor="drawWidth"
               className="sliderLabel"
@@ -97,7 +93,6 @@ function App() {
               {drawWidth} px
             </label>
             <br />
-
             <label
               className="optionsLabel"
             >
@@ -114,7 +109,6 @@ function App() {
             <label htmlFor="sortNone">
               None
             </label>
-            
             <input
               type="radio"
               name="sortHue"
@@ -126,7 +120,6 @@ function App() {
             <label htmlFor="sortHue">
               Hue
             </label>
-            
             <input
               type="radio"
               name="sortSaturation"
@@ -150,7 +143,6 @@ function App() {
             <label htmlFor="sortLuminosity">
               Luminosity
             </label>
-
             <div
               className="borderDiv"
             >
@@ -173,21 +165,17 @@ function App() {
                 On
               </label>
             </div>
-
-
           </div>
-
           <div
             className="status"
           >
-            {drawWidth} wide x {drawHeight} high
+            {drawWidth}px width x {drawHeight}px height
             <br />
             {totalColours} colours<br />
             { drawHeight === 20000 ? 'Max height reached!' : ''}
           </div>
         </div>
       </div>
-
       <Palette
         colours={colours}
         segmentSize={segmentSize}
@@ -197,7 +185,6 @@ function App() {
         border={border}
         responseData={setTotalColours}
       />
-
       { drawHeight === 20000 ? 'Sorry, we have to draw the line somewhere!' : ''}
 		</div>
 	)
